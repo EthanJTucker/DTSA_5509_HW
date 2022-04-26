@@ -14076,7 +14076,8 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;./data/Rice_MSC_Dataset/Rice_MSC_Dataset.xlsx&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This cell imports EDAdata. This is not the dataset fed to the ML models.</span>
+<span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;./data/Rice_MSC_Dataset/Rice_MSC_Dataset.xlsx&quot;</span>
 <span class="n">sheet_name</span> <span class="o">=</span> <span class="s2">&quot;Rice_MSC_Dataset&quot;</span>
 <span class="n">EDAdata</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">sheet_name</span> <span class="o">=</span> <span class="n">sheet_name</span><span class="p">,</span> <span class="n">usecols</span> <span class="o">=</span> <span class="s2">&quot;A:P, DC&quot;</span><span class="p">)</span>
 <span class="n">EDAdata</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -14316,7 +14317,8 @@ CLASS
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">corrMatrix</span> <span class="o">=</span> <span class="n">EDAdata</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This cell creates a correlation matrix for the EDAdata</span>
+<span class="n">corrMatrix</span> <span class="o">=</span> <span class="n">EDAdata</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
 <span class="n">sn</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">corrMatrix</span><span class="p">)</span>
 </pre></div>
 
@@ -14367,7 +14369,7 @@ CLASS
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Quick analysis of correlation matrix: there are many highly covariant features. Some seem to be direct functions of others such: as area being calculated from the major and minor axis lengths, eccentricity also being a function of major and minor axis length, etc. The dataset is highly multicollinear. As such when creating a classifier from this data it is important to only choose some features deemed sufficiently independant.</p>
+<p>Quick analysis of correlation matrix: there are many highly covariant features. Some seem to be direct functions of others such: as area being calculated from the major and minor axis lengths, eccentricity also being a function of major and minor axis length, etc. The dataset is highly multicollinear. As such when creating a classifier from this data it is important to only choose some features deemed sufficiently independant. The high multicollinearity in this dataset arises from the fact that many of these features were calculated as functions of similar pixel locations, each of which could be considered an independant feature. As such it is better to use the independant pixel brightnesses themselves as predictors. We will do this by just using the raw image data.</p>
 
 </div>
 </div>
@@ -14382,7 +14384,8 @@ CLASS
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">JupyterDash</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This cell creates a dash app for viewing paramter distributions.</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">JupyterDash</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">colors</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;background&#39;</span><span class="p">:</span> <span class="s1">&#39;#111111&#39;</span><span class="p">,</span>
@@ -14395,17 +14398,17 @@ CLASS
         
         <span class="n">dcc</span><span class="o">.</span><span class="n">Tab</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">children</span><span class="o">=</span><span class="p">[</span>
             
-            <span class="n">html</span><span class="o">.</span><span class="n">H1</span><span class="p">(</span>
+            <span class="n">html</span><span class="o">.</span><span class="n">H1</span><span class="p">(</span> <span class="c1">#Tab title</span>
                 <span class="n">children</span><span class="o">=</span><span class="s1">&#39;Violin Plots of Feature Distributions&#39;</span><span class="p">,</span>
                 <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;textAlign&#39;</span><span class="p">:</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]}),</span>
             
-            <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">(</span>
+            <span class="n">html</span><span class="o">.</span><span class="n">Div</span><span class="p">(</span> <span class="c1">#Dropdown instruction</span>
                 <span class="n">children</span><span class="o">=</span><span class="s1">&#39;Please select a feature you would like to know the distribution of below. Interaction options are in the upper right of the plot.&#39;</span><span class="p">,</span> 
                 <span class="n">style</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;textAlign&#39;</span><span class="p">:</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span><span class="s1">&#39;color&#39;</span><span class="p">:</span> <span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]}),</span>
 
             <span class="n">dcc</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s1">&#39;Violin_Plot&#39;</span><span class="p">),</span>
             
-            <span class="n">dcc</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
+            <span class="n">dcc</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span> <span class="c1">#Dropdown itself</span>
                 <span class="nb">id</span><span class="o">=</span><span class="s1">&#39;Violin_Dropdown&#39;</span><span class="p">,</span>
                 <span class="n">options</span><span class="o">=</span><span class="p">[</span>
                     <span class="p">{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;AREA&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;AREA&#39;</span><span class="p">},</span>
@@ -14434,7 +14437,7 @@ CLASS
     <span class="p">])</span>
     <span class="p">])</span>
 
-
+<span class="c1">#This callback creates new violin plots upon user selection</span>
 <span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span>
     <span class="n">Output</span><span class="p">(</span><span class="s1">&#39;Violin_Plot&#39;</span><span class="p">,</span> <span class="s1">&#39;figure&#39;</span><span class="p">),</span>
     <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;Violin_Dropdown&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)</span>
@@ -14447,11 +14450,11 @@ CLASS
 <span class="sd">        Output: plotly.express.violin figure</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">EDAdata</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">value</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;CLASS&quot;</span><span class="p">,</span>  
-                    <span class="n">color_discrete_sequence</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="s2">&quot;#d62728&quot;</span><span class="p">],</span>
+                    <span class="n">color_discrete_sequence</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="s2">&quot;#d62728&quot;</span><span class="p">],</span> <span class="c1">#Use alternating color scheme</span>
                     <span class="n">box</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hover_data</span><span class="o">=</span><span class="n">EDAdata</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
                     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Probability Density&quot;</span><span class="p">)</span>
 
-    <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span> <span class="c1">#assimilate to background colors</span>
         <span class="n">plot_bgcolor</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">],</span>
         <span class="n">paper_bgcolor</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;background&#39;</span><span class="p">],</span>
         <span class="n">font_color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">],</span>
@@ -14518,7 +14521,8 @@ CLASS
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">readRiceType</span><span class="p">(</span><span class="n">current_data</span><span class="p">,</span> <span class="n">current_labels</span><span class="p">,</span> <span class="n">n_each</span><span class="p">,</span> <span class="n">pix</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This cell reads in the image data into numpy arrays</span>
+<span class="k">def</span> <span class="nf">readRiceType</span><span class="p">(</span><span class="n">current_data</span><span class="p">,</span> <span class="n">current_labels</span><span class="p">,</span> <span class="n">n_each</span><span class="p">,</span> <span class="n">pix</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Appends image data to current_data, and labels to current_labels</span>
 <span class="sd">        Input:  list current_data, </span>
@@ -14577,7 +14581,8 @@ CLASS
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.20</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Create test and train data</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.20</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14602,7 +14607,8 @@ CLASS
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">KNN</span> <span class="o">=</span> <span class="n">KNeighborsClassifier</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Run GridSearchCV over KNN classifiers, find optimal value for K</span>
+<span class="n">KNN</span> <span class="o">=</span> <span class="n">KNeighborsClassifier</span><span class="p">()</span>
 <span class="n">param_to_try</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;n_neighbors&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)]}</span>
 <span class="n">grid</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">estimator</span> <span class="o">=</span> <span class="n">KNN</span><span class="p">,</span> <span class="n">param_grid</span> <span class="o">=</span> <span class="n">param_to_try</span><span class="p">,</span> <span class="n">n_jobs</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
@@ -14643,12 +14649,11 @@ CLASS
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">KNN_results_dic</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">cv_results_</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This plots n_neighbors vs mean test score</span>
+<span class="n">KNN_results_dic</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">cv_results_</span>
 <span class="n">KNN_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">KNN_results_dic</span><span class="p">)</span>
 <span class="n">n_neighbors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">KNN_results</span><span class="p">[</span><span class="s2">&quot;param_n_neighbors&quot;</span><span class="p">])</span>
 <span class="n">mean_score</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">KNN_results</span><span class="p">[</span><span class="s2">&quot;mean_test_score&quot;</span><span class="p">])</span>
-
-<span class="c1"># This plots n_neighbors vs mean test score</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">n_neighbors</span><span class="p">,</span> <span class="n">mean_score</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Number of neighbors K&quot;</span><span class="p">)</span>
@@ -14693,7 +14698,8 @@ CLASS
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bestKNN</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_estimator_</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Accuracy of best KNN estimator</span>
+<span class="n">bestKNN</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">best_estimator_</span>
 <span class="n">yhat</span> <span class="o">=</span> <span class="n">bestKNN</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
 <span class="n">model_accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">yhat</span><span class="p">)</span>
 
@@ -14744,7 +14750,8 @@ CLASS
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">classifier</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Make an adaBoost classifier with 200 trees. This cell will take a while to run </span>
+<span class="n">classifier</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
 <span class="n">n_trees</span> <span class="o">=</span> <span class="mi">200</span>
 <span class="n">AdaBoost</span> <span class="o">=</span> <span class="n">AdaBoostClassifier</span><span class="p">(</span><span class="n">base_estimator</span> <span class="o">=</span> <span class="n">classifier</span><span class="p">,</span> <span class="n">n_estimators</span> <span class="o">=</span> <span class="n">n_trees</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
 
@@ -14786,7 +14793,8 @@ CLASS
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">yhat</span> <span class="o">=</span> <span class="n">AdaBoost</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Accuracy of adaBoost Classifier</span>
+<span class="n">yhat</span> <span class="o">=</span> <span class="n">AdaBoost</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
 <span class="n">model_accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">yhat</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">model_accuracy</span><span class="p">)</span>
@@ -14836,22 +14844,30 @@ CLASS
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[72]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_trees</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">100</span> <span class="o">*</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Find run times, accuracy for random forest classifiers with trees between (1, 1000).</span>
+<span class="n">n_trees</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mi">100</span> <span class="o">*</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)]</span>
 <span class="n">accuracy_scores</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">loopTimes</span> <span class="o">=</span> <span class="p">[]</span>
 
+<span class="c1">#Main Loop</span>
 <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">n_trees</span><span class="p">:</span>
+    <span class="c1">#Start timing loop</span>
     <span class="n">startTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="c1">#Train and get predictions from current random forest</span>
     <span class="n">this_random_forest</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">random_state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n_estimators</span> <span class="o">=</span> <span class="n">n</span><span class="p">,</span> <span class="n">min_impurity_decrease</span> <span class="o">=</span> <span class="mf">.0001</span><span class="p">,</span> <span class="n">n_jobs</span> <span class="o">=</span> <span class="mi">14</span><span class="p">)</span>
     <span class="n">this_random_forest</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
     <span class="n">this_yhat</span> <span class="o">=</span> <span class="n">this_random_forest</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="c1">#Get accuracy of current random forest</span>
     <span class="n">this_accuracy</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">this_yhat</span><span class="p">)</span>
     <span class="n">accuracy_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">this_accuracy</span><span class="p">)</span>
+    <span class="c1">#Stop timing loop now that large calculations are done, record results</span>
     <span class="n">endTime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="n">totalLoopTime</span> <span class="o">=</span> <span class="n">endTime</span> <span class="o">-</span> <span class="n">startTime</span>
     <span class="n">loopTimes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">totalLoopTime</span><span class="p">)</span>
+    <span class="c1">#Print results for this random forest</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Random Forest with &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; trees yielded accuracy of: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">this_accuracy</span><span class="p">,</span> <span class="mi">4</span><span class="p">)),</span> <span class="s2">&quot; with a total loop time of: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">totalLoopTime</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
 
+<span class="c1">#This makes a plot of Accuracy Vs. Number of Trees</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">n_trees</span><span class="p">,</span> <span class="n">accuracy_scores</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Number of trees in random forest&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Accuracy&quot;</span><span class="p">)</span>
